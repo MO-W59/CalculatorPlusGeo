@@ -1,0 +1,1490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CalculatorPlusGeoClass</class>
+ <widget class="QMainWindow" name="CalculatorPlusGeoClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>530</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>CalculatorPlusGeo</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background: rgb(50, 50, 50);</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QStackedWidget" name="calStack">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>381</width>
+      <height>481</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>1</number>
+    </property>
+    <widget class="QWidget" name="calPage">
+     <widget class="QTextBrowser" name="exprBrowser">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>10</y>
+        <width>381</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background: rgb(39, 39, 39);
+border: 3px solid rgb(195, 195, 195);
+border-radius: 20px;
+padding: 3px;
+color: rgb(195, 195, 195)</string>
+      </property>
+      <property name="placeholderText">
+       <string>Awaiting Input . . .</string>
+      </property>
+     </widget>
+     <widget class="QTextBrowser" name="ansrBrowser">
+      <property name="geometry">
+       <rect>
+        <x>55</x>
+        <y>80</y>
+        <width>321</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background: rgb(39, 39, 39);
+border: 3px solid rgb(195, 195, 195);
+border-radius: 20px;
+padding: 3px;
+color: rgb(195, 195, 195);</string>
+      </property>
+      <property name="placeholderText">
+       <string>Awaiting Input . . .</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="eqlsLabel">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>80</y>
+        <width>49</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>36</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(195, 195, 195);</string>
+      </property>
+      <property name="text">
+       <string>=</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QWidget" name="gridLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>150</y>
+        <width>381</width>
+        <height>331</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="calGrid">
+       <item row="2" column="0">
+        <widget class="QPushButton" name="fourBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#fourBtn{
+background: rgb(80, 80, 80);
+color: rgb(195, 195, 195);
+border-radius: 20px;
+}
+
+QPushButton#fourBtn:hover{
+background: rgb(100, 100, 100);
+}
+
+QPushButton#fourBtn:pressed{
+background: rgb(80, 80, 80);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>4</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="leftParenBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#leftParenBtn {
+color: rgb(195, 195, 195);
+border-radius: 20px;
+background: rgb(0, 86, 63);
+}
+
+QPushButton#leftParenBtn:hover{
+background: rgb(0, 102, 73);
+}
+
+QPushButton#leftParenBtn:pressed{
+background: rgb(0, 68, 49);
+border: 2px solid rgb(45, 45, 45);
+}
+</string>
+         </property>
+         <property name="text">
+          <string>(</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="sevenBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#sevenBtn{
+background: rgb(80, 80, 80);
+color: rgb(195, 195, 195);
+border-radius: 20px;
+}
+
+QPushButton#sevenBtn:hover{
+background: rgb(100, 100, 100);
+}
+
+QPushButton#sevenBtn:pressed{
+background: rgb(80, 80, 80);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>7</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="powBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>22</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#powBtn {
+color: rgb(195, 195, 195);
+border-radius: 20px;
+background: rgb(0, 86, 63);
+}
+
+QPushButton#powBtn:hover{
+background: rgb(0, 102, 73);
+}
+
+QPushButton#powBtn:pressed{
+background: rgb(0, 68, 49);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>^ pow</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QPushButton" name="oneBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#oneBtn{
+background: rgb(80, 80, 80);
+color: rgb(195, 195, 195);
+border-radius: 20px;
+}
+
+QPushButton#oneBtn:hover{
+background: rgb(100, 100, 100);
+}
+
+QPushButton#oneBtn:pressed{
+background: rgb(80, 80, 80);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>1</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QPushButton" name="divBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#divBtn {
+color: rgb(195, 195, 195);
+border-radius: 20px;
+background: rgb(0, 86, 63);
+}
+
+QPushButton#divBtn:hover{
+background: rgb(0, 102, 73);
+}
+
+QPushButton#divBtn:pressed{
+background: rgb(0, 68, 49);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>/</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="rightParenBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#rightParenBtn {
+color: rgb(195, 195, 195);
+border-radius: 20px;
+background: rgb(0, 86, 63);
+}
+
+QPushButton#rightParenBtn:hover{
+background: rgb(0, 102, 73);
+}
+
+QPushButton#rightParenBtn:pressed{
+background: rgb(0, 68, 49);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QPushButton" name="decBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#decBtn{
+background: rgb(80, 80, 80);
+color: rgb(195, 195, 195);
+border-radius: 20px;
+}
+
+QPushButton#decBtn:hover{
+background: rgb(100, 100, 100);
+}
+
+QPushButton#decBtn:pressed{
+background: rgb(80, 80, 80);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="eightBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#eightBtn{
+background: rgb(80, 80, 80);
+color: rgb(195, 195, 195);
+border-radius: 20px;
+}
+
+QPushButton#eightBtn:hover{
+background: rgb(100, 100, 100);
+}
+
+QPushButton#eightBtn:pressed{
+background: rgb(80, 80, 80);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>8</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="nineBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#nineBtn{
+background: rgb(80, 80, 80);
+color: rgb(195, 195, 195);
+border-radius: 20px;
+}
+
+QPushButton#nineBtn:hover{
+background: rgb(100, 100, 100);
+}
+
+QPushButton#nineBtn:pressed{
+background: rgb(80, 80, 80);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>9</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QPushButton" name="multiBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#multiBtn {
+color: rgb(195, 195, 195);
+border-radius: 20px;
+background: rgb(0, 86, 63);
+}
+
+QPushButton#multiBtn:hover{
+background: rgb(0, 102, 73);
+}
+
+QPushButton#multiBtn:pressed{
+background: rgb(0, 68, 49);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>*</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QPushButton" name="fiveBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#fiveBtn{
+background: rgb(80, 80, 80);
+color: rgb(195, 195, 195);
+border-radius: 20px;
+}
+
+QPushButton#fiveBtn:hover{
+background: rgb(100, 100, 100);
+}
+
+QPushButton#fiveBtn:pressed{
+background: rgb(80, 80, 80);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>5</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QPushButton" name="sixBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#sixBtn{
+background: rgb(80, 80, 80);
+color: rgb(195, 195, 195);
+border-radius: 20px;
+}
+
+QPushButton#sixBtn:hover{
+background: rgb(100, 100, 100);
+}
+
+QPushButton#sixBtn:pressed{
+background: rgb(80, 80, 80);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>6</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="QPushButton" name="minusBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#minusBtn {
+color: rgb(195, 195, 195);
+border-radius: 20px;
+background: rgb(0, 86, 63);
+}
+
+QPushButton#minusBtn:hover{
+background: rgb(0, 102, 73);
+}
+
+QPushButton#minusBtn:pressed{
+background: rgb(0, 68, 49);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>-</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QPushButton" name="twoBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#twoBtn{
+background: rgb(80, 80, 80);
+color: rgb(195, 195, 195);
+border-radius: 20px;
+}
+
+QPushButton#twoBtn:hover{
+background: rgb(100, 100, 100);
+}
+
+QPushButton#twoBtn:pressed{
+background: rgb(80, 80, 80);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>2</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2">
+        <widget class="QPushButton" name="threeBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#threeBtn{
+background: rgb(80, 80, 80);
+color: rgb(195, 195, 195);
+border-radius: 20px;
+}
+
+QPushButton#threeBtn:hover{
+background: rgb(100, 100, 100);
+}
+
+QPushButton#threeBtn:pressed{
+background: rgb(80, 80, 80);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>3</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="3">
+        <widget class="QPushButton" name="plusBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#plusBtn {
+color: rgb(195, 195, 195);
+border-radius: 20px;
+background: rgb(0, 86, 63);
+}
+
+QPushButton#plusBtn:hover{
+background: rgb(0, 102, 73);
+}
+
+QPushButton#plusBtn:pressed{
+background: rgb(0, 68, 49);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>+</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QPushButton" name="zeroBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#zeroBtn{
+background: rgb(80, 80, 80);
+color: rgb(195, 195, 195);
+border-radius: 20px;
+}
+
+QPushButton#zeroBtn:hover{
+background: rgb(100, 100, 100);
+}
+
+QPushButton#zeroBtn:pressed{
+background: rgb(80, 80, 80);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QPushButton" name="delBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>22</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#delBtn{
+color:rgb(35, 35, 35);
+background: rgb(154, 46, 46);
+border-radius: 20px;
+}
+
+QPushButton#delBtn:hover{
+background: rgb(181, 54, 54);
+}
+
+QPushButton#delBtn:pressed{
+background: rgb(130, 39, 39);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>&lt;Del</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="3">
+        <widget class="QPushButton" name="clearBtn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>22</pointsize>
+          </font>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton#clearBtn{
+color:rgb(35, 35, 35);
+background: rgb(154, 46, 46);
+border-radius: 20px;
+}
+
+QPushButton#clearBtn:hover{
+background: rgb(181, 54, 54);
+}
+
+QPushButton#clearBtn:pressed{
+background: rgb(130, 39, 39);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+         </property>
+         <property name="text">
+          <string>Clear</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="geoPage">
+     <widget class="QWidget" name="gridLayoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>10</y>
+        <width>331</width>
+        <height>151</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="geoGrid">
+       <item row="1" column="2">
+        <widget class="QRadioButton" name="cuboidRadio">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(195, 195, 195);</string>
+         </property>
+         <property name="text">
+          <string>Cuboid</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QRadioButton" name="cubeRadio">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(195, 195, 195);</string>
+         </property>
+         <property name="text">
+          <string>Cube</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QRadioButton" name="triRadio">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(195, 195, 195);</string>
+         </property>
+         <property name="text">
+          <string>Triangle</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QRadioButton" name="circleRadio">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(195, 195, 195);</string>
+         </property>
+         <property name="text">
+          <string>Circle</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QRadioButton" name="rectRadio">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(195, 195, 195);</string>
+         </property>
+         <property name="text">
+          <string>Rectangle</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QRadioButton" name="sqrRadio">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(195, 195, 195);</string>
+         </property>
+         <property name="text">
+          <string>Square</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QRadioButton" name="sqrPyRadio">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(195, 195, 195);</string>
+         </property>
+         <property name="text">
+          <string>Right
+Square
+Pyramid</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QRadioButton" name="triPyRadio">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(195, 195, 195);</string>
+         </property>
+         <property name="text">
+          <string>Right
+Triangle
+Pyramid</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QRadioButton" name="sphRadio">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(195, 195, 195);</string>
+         </property>
+         <property name="text">
+          <string>Sphere</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QLineEdit" name="geoVal1Line">
+      <property name="geometry">
+       <rect>
+        <x>262</x>
+        <y>180</y>
+        <width>111</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background: rgb(39, 39, 39);
+border: 3px solid rgb(195, 195, 195);
+border-radius: 15px;
+padding: 3px;
+color: rgb(195, 195, 195);</string>
+      </property>
+      <property name="placeholderText">
+       <string>Awaiting Shape...</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="geoVal3Line">
+      <property name="geometry">
+       <rect>
+        <x>260</x>
+        <y>300</y>
+        <width>111</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background: rgb(39, 39, 39);
+border: 3px solid rgb(195, 195, 195);
+border-radius: 15px;
+padding: 3px;
+color: rgb(195, 195, 195);</string>
+      </property>
+      <property name="placeholderText">
+       <string>Awaiting Shape...</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="geoVal2Line">
+      <property name="geometry">
+       <rect>
+        <x>260</x>
+        <y>240</y>
+        <width>111</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background: rgb(39, 39, 39);
+border: 3px solid rgb(195, 195, 195);
+border-radius: 15px;
+padding: 3px;
+color: rgb(195, 195, 195);</string>
+      </property>
+      <property name="placeholderText">
+       <string>Awaiting Shape...</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="formulaHeadLabel">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>170</y>
+        <width>111</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(195, 195, 195);</string>
+      </property>
+      <property name="text">
+       <string>Formula:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="formulaContentLabel">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>230</y>
+        <width>231</width>
+        <height>121</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(195, 195, 195);</string>
+      </property>
+      <property name="text">
+       <string>Formulas will appear here. . .</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="geoEqlsLabel">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>370</y>
+        <width>181</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(195, 195, 195);</string>
+      </property>
+      <property name="text">
+       <string>Area/Volume =</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QTextBrowser" name="geoAnsrBrowser">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>420</y>
+        <width>381</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background: rgb(39, 39, 39);
+border: 3px solid rgb(195, 195, 195);
+border-radius: 20px;
+padding: 3px;
+color: rgb(195, 195, 195);</string>
+      </property>
+      <property name="placeholderText">
+       <string>Awaiting Input . . .</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="modeSwtchBtn">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>10</y>
+      <width>221</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton#modeSwtchBtn{
+color: rgb(195, 195, 195);
+background: rgb(0, 86, 63);
+border-radius: 9px;
+}
+
+QPushButton#modeSwtchBtn:hover{
+background: rgb(0, 102, 73);
+}
+
+QPushButton#modeSwtchBtn:pressed{
+background: rgb(0, 68, 49);
+border: 2px solid rgb(45, 45, 45);
+}</string>
+    </property>
+    <property name="text">
+     <string>Calculator / Geometry</string>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>geoVal1Line</tabstop>
+  <tabstop>geoVal2Line</tabstop>
+  <tabstop>geoVal3Line</tabstop>
+ </tabstops>
+ <resources>
+  <include location="CalculatorPlusGeo.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>sqrPyRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal2Line</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>320</x>
+     <y>162</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>279</x>
+     <y>310</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sqrPyRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal3Line</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>325</x>
+     <y>166</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>379</x>
+     <y>364</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>triPyRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal2Line</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>209</x>
+     <y>160</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>296</x>
+     <y>307</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>triPyRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal3Line</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>196</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>277</x>
+     <y>365</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sphRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal2Line</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>73</x>
+     <y>168</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>291</x>
+     <y>304</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sphRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal3Line</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>102</x>
+     <y>165</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>300</x>
+     <y>365</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cuboidRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal2Line</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>318</x>
+     <y>115</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>378</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cuboidRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal3Line</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>110</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>335</x>
+     <y>348</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cubeRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal2Line</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>205</x>
+     <y>112</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>304</x>
+     <y>306</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cubeRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal3Line</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>222</x>
+     <y>111</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>287</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>triRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal2Line</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>91</x>
+     <y>108</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>290</x>
+     <y>308</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>triRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal3Line</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>123</x>
+     <y>106</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>352</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sqrRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal2Line</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>88</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>284</x>
+     <y>308</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sqrRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal3Line</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>106</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>317</x>
+     <y>373</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rectRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal2Line</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>194</x>
+     <y>76</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>302</x>
+     <y>309</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rectRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal3Line</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>243</x>
+     <y>77</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>307</x>
+     <y>348</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>circleRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal2Line</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>299</x>
+     <y>73</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>292</x>
+     <y>300</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>circleRadio</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>geoVal3Line</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>308</x>
+     <y>69</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>345</x>
+     <y>358</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

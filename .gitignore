@@ -10,6 +10,27 @@
 *.dll
 *.dylib
 
+# VS files
+.vs
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.lastbuildstate
+*.tlog
+*.recipe
+*.log
+*.obj
+*.props
+*.stash
+*.idx
+*.cbt
+*.pro
+*.natvis
+*.pdb
+*.ilk
+qmake
+
 # Qt-es
 object_script.*.Release
 object_script.*.Debug
@@ -24,7 +45,6 @@ object_script.*.Debug
 moc_*.cpp
 moc_*.h
 qrc_*.cpp
-ui_*.h
 *.qmlc
 *.jsc
 Makefile*
