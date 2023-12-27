@@ -31,4 +31,3 @@ C:\Qt\6.6.1\msvc2019_64\plugins
 1. Linting.
 2. Double check comments.
 3. Add commas to expression browser?
-4. Fix window size.

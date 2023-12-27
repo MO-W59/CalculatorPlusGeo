@@ -85,6 +85,8 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(CalculatorPlusGeoClass->sizePolicy().hasHeightForWidth());
         CalculatorPlusGeoClass->setSizePolicy(sizePolicy);
+        CalculatorPlusGeoClass->setMinimumSize(QSize(400, 530));
+        CalculatorPlusGeoClass->setMaximumSize(QSize(400, 530));
         CalculatorPlusGeoClass->setStyleSheet(QString::fromUtf8("background: rgb(50, 50, 50);"));
         centralWidget = new QWidget(CalculatorPlusGeoClass);
         centralWidget->setObjectName("centralWidget");
