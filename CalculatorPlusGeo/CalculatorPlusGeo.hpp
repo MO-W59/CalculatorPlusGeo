@@ -11,6 +11,9 @@ class CalculatorPlusGeo : public QMainWindow
     int m_pDepth = 0;
     short m_minusCnt = 1;
     bool m_afterDec = false;
+    bool m_displayAftrDec = false;
+    QString m_displayExpr = "";
+    std::string m_internalExpr = "";
     std::array<QPushButton*, 4> OP_BTNS;
     std::array<QPushButton*, 9> NUM_BTNS;
 
@@ -60,6 +63,7 @@ private:
     void btnsReset();
     void enableNumBtns(bool);
     void enableOpsBtns(bool);
-    void formatAnsr(std::string& ansr);
+    void formatAnsr(std::string&);
+    void formatDisplayExpr();
     void clearGeoLines();
 };

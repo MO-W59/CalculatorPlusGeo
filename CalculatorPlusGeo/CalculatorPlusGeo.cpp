@@ -86,37 +86,33 @@ void CalculatorPlusGeo::tryCal()
 {// Attempts to calculate the expression as user clicks buttons
     try
     {
-        // Get expression from gui, lock buttons accordingly
-        QString qexpr = ui.exprBrowser->toPlainText();
+        // Lock buttons accordingly
         lockBtns();
 
         // If the expression has noting in it ie event led to empty string, simply return
-        if (qexpr.length() < 1)
+        if (m_internalExpr.length() < 1)
             return;
 
         // If the back of the expression is '(' or an operator, return as this expression is not yet valid
-        else if (std::find(shuntYard::OPERATORS.begin(), shuntYard::OPERATORS.end(), qexpr.back()) != std::end(shuntYard::OPERATORS) ||
-            qexpr.back() == '(')
+        else if (std::find(shuntYard::OPERATORS.begin(), shuntYard::OPERATORS.end(), m_internalExpr.back()) != std::end(shuntYard::OPERATORS) ||
+            m_internalExpr.back() == '(')
             return;
 
-        // If the expression has a lenght of 1, simply return that value
-        else if (qexpr.length() == 1)
-            return ui.ansrBrowser->setText(qexpr);
+        // If the expression has a length of 1, simply return that value
+        else if (m_internalExpr.length() == 1)
+            return ui.ansrBrowser->setText(QString::fromStdString(m_internalExpr));
 
-        // Otherwise take the expression
-        std::string expr = qexpr.toStdString();
-    
-        // Attempt to make a shuntyard with the expression and validate it
-        auto yard = std::make_unique<shuntYard::Yard>(expr);
+        // Otherwise attempt to make a shuntyard with the expression and validate it
+        auto yard = std::make_unique<shuntYard::Yard>(m_internalExpr);
         if (!yard->validateShunt())
-        {// Throw expception to produce invalid message to user
+        {// Throw exception to produce invalid message to user
             throw std::exception();
         }
         // Otherwise its a valid expression, solve it via RPN
         std::string ansr = shuntYard::RPNEval(yard->getOutQueue());
         // Format to add commas
         formatAnsr(ansr);
-        // Convert back to QString and display
+        // Convert to QString and display
         QString qansr = QString::fromStdString(ansr);
         ui.ansrBrowser->setText(qansr);
     }
@@ -131,9 +127,11 @@ void CalculatorPlusGeo::formatAnsr(std::string& ansr)
     // Look for a decimal
     auto decIndex = ansr.find('.');
     int negativeOffset = 3; // 3 for no negative numbers
+    bool hasDec = true;
     if (decIndex == std::string::npos)
     {// If none is found start from the end of the string
         decIndex = ansr.size();
+        hasDec = false;
     }
 
     // Check if it is a negative number
@@ -148,20 +146,100 @@ void CalculatorPlusGeo::formatAnsr(std::string& ansr)
         ansr.insert(decIndex, ",");
     }
 
-    // Format the result to remove .00000 from 4.00000
-    while (ansr.size() > 1 && ansr.back() == '0' || ansr.back() == '.')
+    // Format the result to remove extra zeros after decimal ie, .00000 from 4.00000
+    if(hasDec)
     {
-        if (ansr.back() == '.' && ansr.front() == '0')
+        while (ansr.size() > 1 && ansr.back() == '0' || ansr.back() == '.')
         {
-            ansr = "<= 0.000000";
-            break;
-        }
-        else if (ansr.back() == '.')
-        {
+            if (ansr.back() == '.' && ansr.front() == '0')
+            {
+                ansr = "<= 0.000000";
+                break;
+            }
+            else if (ansr.back() == '.')
+            {
+                ansr.pop_back();
+                break;
+            }
             ansr.pop_back();
-            break;
         }
-        ansr.pop_back();
+    }
+}
+void CalculatorPlusGeo::formatDisplayExpr()
+{// Formats the user input expression to add commas to large numbers
+    // Get internal expression (not shown to user)
+    m_displayExpr = QString::fromStdString(m_internalExpr);
+    // Initialize values for format logic
+    int idx = 1; // skips beginning character to account for starting negative number
+    int revIdx = 1;
+    int digitCnt = 0;
+
+    // If starting character is a decimal set boolean control to true
+    if (m_displayExpr.startsWith('.'))
+        m_displayAftrDec = true;
+    else
+        m_displayAftrDec = false;
+  
+    // While not the end of the expression
+    while(!(idx > m_displayExpr.length() - 1))
+    {
+        // Grab an element
+        QChar ele = m_displayExpr.at(idx);
+        // If not after a decimal and the current element is an operator, right parenthesis, decimal or end of string
+        if (!m_displayAftrDec && (ele == ')' ||  ele == '.' || idx == m_displayExpr.length() - 1 ||
+            std::any_of(shuntYard::OPERATORS.cbegin(), shuntYard::OPERATORS.cend(), 
+            [&ele](const char &op) { return ele == op; })))
+        {
+            // Reverse direction adding commas until another operator or right parenthesis
+            // If index is an operator and the prior index is a right parenthesis skip over the parenthesis
+            if (idx - 2 > 0 && m_displayExpr.at(idx - 1) == ')')
+                revIdx = idx - 2;
+            // Set revIdx based on element at current index or if index is end of string 
+            else if (idx == m_displayExpr.length() - 1 && !(ele == ')' || ele == '.' || 
+                std::any_of(shuntYard::OPERATORS.cbegin(), shuntYard::OPERATORS.cend(),
+                [&ele](const char& op) { return ele == op; })))
+                revIdx = idx; // begins from end of string
+            else
+                revIdx = idx - 1; // Skips back 1 to go to number before operator/dec/parenthesis
+
+            digitCnt = 0; // Reset the digit counter
+            // While not at the beginning of the string
+            while (revIdx > 0)
+            {
+                digitCnt++;
+                // If current value is left parenthesis or an operator break out of inner loop
+                if (QChar revEle = m_displayExpr.at(revIdx); revEle == '(' ||
+                    std::any_of(shuntYard::OPERATORS.cbegin(), shuntYard::OPERATORS.cend(),
+                    [&revEle](const char& op) { return revEle == op; })) 
+                {
+                    break;
+                }
+                // Else if a comma should be placed and next value is a number
+                else if (QChar nextEle = m_displayExpr.at(revIdx - 1); digitCnt == 3 && 
+                    std::any_of(shuntYard::NUMBERS.cbegin(), shuntYard::NUMBERS.cend(),
+                    [&nextEle] (const char &num) { return nextEle == num;}))
+                {
+                    m_displayExpr.insert(revIdx, ",");
+                    idx++; // Increment index to account for new character
+                    digitCnt = 0;
+                    revIdx--;
+                }
+                // Otherwise continue iteration
+                else
+                {
+                    revIdx--;
+                }
+            }
+        }
+        // If element was a decimal set bool to skip numbers after
+        if (ele == '.')
+            m_displayAftrDec = true;
+        // Else if its an operator or left parenthesis then we are no longer after a decimal
+        else if (ele == '(' ||
+            std::any_of(shuntYard::OPERATORS.cbegin(), shuntYard::OPERATORS.cend(),
+            [&ele](const char& op) { return ele == op; }))
+            m_displayAftrDec = false;
+        idx++;
     }
 }
 
@@ -173,13 +251,12 @@ void CalculatorPlusGeo::lockBtns()
  active or deactivate the decimal, minus, and parenthesis.
  */
     // If there is no expression, reset all buttons and return
-    if (ui.exprBrowser->toPlainText().isEmpty()) {
+    if (m_internalExpr.empty()) {
         btnsReset();
         return;
     }
     // Otherwise get the last character in the expression
-    QString qLastEntry = ui.exprBrowser->toPlainText().last(1);
-    char lastEntry = qLastEntry.toStdString()[0];
+    char lastEntry = m_internalExpr.back();
     // If its a number set lastEntry to 'n'
     if (std::any_of(shuntYard::NUMBERS.cbegin(), shuntYard::NUMBERS.cend(), 
         [lastEntry](char const &num) { return num == lastEntry; }))
@@ -211,7 +288,6 @@ void CalculatorPlusGeo::lockBtns()
         enableOpsBtns(true);
         ui.zeroBtn->setEnabled(true);
         ui.minusBtn->setEnabled(true);
-        ui.decBtn->setEnabled(true);
         if (m_pDepth > 0)
             ui.rightParenBtn->setEnabled(true);
         // Disable these btns
@@ -268,6 +344,7 @@ void CalculatorPlusGeo::lockBtns()
         ui.minusBtn->setDisabled(true);
         ui.leftParenBtn->setDisabled(true);
         ui.rightParenBtn->setDisabled(true);
+        ui.decBtn->setDisabled(true);
         break;
 
     case '(':
@@ -409,13 +486,14 @@ void CalculatorPlusGeo::tryGeo()
 
         /* Triangle sides can not be >= the other two sides together ie (a = 3) + (b = 3) = (c = 6)
         enters this if statement and displays the invalid input message */
-        if (!(a + b > c) || !(a + c > b) || !(b + c > a)) 
-        {
-            ui.geoAnsrBrowser->setText("Invalid Input: One triangle side must not double the length of the others!");
-            return;
-        }
-        if (isConverted)
+        if (isConverted) {
+            if (!(a + b > c) || !(a + c > b) || !(b + c > a))
+            {
+                ui.geoAnsrBrowser->setText("Invalid Input: One triangle side must not double the length of the others!");
+                return;
+            }
             result = operations::triangleArea(a, b, c);
+        }
     }
     else if (targetShape == "circleRadio")
     {
@@ -478,121 +556,176 @@ void CalculatorPlusGeo::tryGeo()
 }
 
 /* For each of the following button handlers they add their respective
-characters to the expression when clicked */
+characters to the expressions when clicked, the display string is formatted */
 void CalculatorPlusGeo::zeroClicked()
 {
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + "0");
+    m_internalExpr += '0';
+    m_displayExpr += '0';
+    formatDisplayExpr();
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::oneClicked() 
 {
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + "1");
+    m_internalExpr += '1';
+    m_displayExpr += '1';
+    formatDisplayExpr();
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::twoClicked()
 {
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + "2");
+    m_internalExpr += '2';
+    m_displayExpr += '2';
+    formatDisplayExpr();
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::threeClicked()
 {
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + "3");
+    m_internalExpr += '3';
+    m_displayExpr += '3';
+    formatDisplayExpr();
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::fourClicked()
 {
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + "4");
+    m_internalExpr += '4';
+    m_displayExpr += '4';
+    formatDisplayExpr();
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::fiveClicked()
 {
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + "5");
+    m_internalExpr += '5';
+    m_displayExpr += '5';
+    formatDisplayExpr();
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::sixClicked()
 {
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + "6");
+    m_internalExpr += '6';
+    m_displayExpr += '6';
+    formatDisplayExpr();
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::sevenClicked()
 {
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + "7");
+    m_internalExpr += '7';
+    m_displayExpr += '7';
+    formatDisplayExpr();
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::eightClicked()
 {
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + "8");
+    m_internalExpr += '8';
+    m_displayExpr += '8';
+    formatDisplayExpr();
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::nineClicked()
 {
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + "9");
+    m_internalExpr += '9';
+    m_displayExpr += '9';
+    formatDisplayExpr();
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::leftParenClicked()
 {
+    m_internalExpr += '(';
+    m_displayExpr += '(';
+    formatDisplayExpr();
     m_pDepth++;// Increase parenthesis depth to allow and equal amount of ')' characters
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + "(");
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::rightParenClicked()
 {
+    m_internalExpr += ')';
+    m_displayExpr += ')';
+    formatDisplayExpr();
     m_pDepth--;// Decrease parenthesis depth to prevent too many ')' characters
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + ")");
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::powClicked()
 {
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + "^");
+    m_internalExpr += '^';
+    m_displayExpr += '^';
+    formatDisplayExpr();
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::divClicked()
 {
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + "/");
+    m_internalExpr += '/';
+    m_displayExpr += '/';
+    formatDisplayExpr();
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::multiClicked()
 {
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + "*");
+    m_internalExpr += '*';
+    m_displayExpr += '*';
+    formatDisplayExpr();
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::minusClicked()
 {
+    m_internalExpr += '-';
+    m_displayExpr += '-';
+    formatDisplayExpr();
     m_minusCnt++;// Increase minusCnt to prevent too many '-' characters
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + "-");
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::plusClicked()
 {
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + "+");
+    m_internalExpr += '+';
+    m_displayExpr += '+';
+    formatDisplayExpr();
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::decClicked()
 {
-    ui.exprBrowser->setText(ui.exprBrowser->toPlainText() + ".");
+        m_internalExpr += '.';
+        m_displayExpr += '.';
+        formatDisplayExpr();
+        ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::delClicked()
 {/* Deletes the last character in the expression string and resets 
  buttons to an appropriate state based on what character was deleted
  and what the new last character and new next last character are */
-    // Get the expression
-    QString current = ui.exprBrowser->toPlainText();
 
-    // if it is 0 or 1 in length, expression will be empty so reset logic and clear
-    if (current.length() <= 1)
+    // If internal expression is 0 or 1 in length, expression will be empty so reset logic and clear
+    if (m_internalExpr.length() <= 1)
     {
         m_pDepth = 0;
         m_minusCnt = 1;
         m_afterDec = false;
+        m_displayAftrDec = false;
         btnsReset();
+        m_internalExpr.clear();
+        m_displayExpr.clear();
         ui.ansrBrowser->clear();
         ui.exprBrowser->clear();
         return;
     }
-
+    char last = m_internalExpr.back();
     // If the character being deleted is one of the following
-    if (QChar last = current.back(); last == ')')
+    if (last == ')')
     {
         ui.rightParenBtn->setEnabled(true); // Enable the button
         m_pDepth++; // and increase the parenthesis depth
@@ -606,19 +739,49 @@ void CalculatorPlusGeo::delClicked()
         if (m_minusCnt < 2)
             ui.minusBtn->setEnabled(true); // If minus count is < 2 then enable the button
     }
-    else if (last == '.')
-        m_afterDec = false; // Set decimal logic to before status
+    else if (last == '.') 
+    {
+        m_afterDec = false;// Set decimal logic to before status
+        m_displayAftrDec = false;
+        ui.decBtn->setEnabled(true);
+    }
+
+    // If the last value is an operator or last is minus and minus count = 1
+    if (std::any_of(shuntYard::OPERATORS.cbegin(), shuntYard::OPERATORS.cend(),
+        [&last](const char& op) { return last == op; }) || (last == '-' && m_minusCnt == 1))
+    {   // Look for the next occurrence of a '.' or an operator
+        for (auto itr = m_internalExpr.end() - 2; itr > m_internalExpr.begin(); itr--)
+        {
+            // If there is a decimal point then we are after a decimal
+            if (*itr == '.')
+            {// Set logic appropriately
+                m_afterDec = true;
+                m_displayAftrDec = true;
+                ui.decBtn->setDisabled(true);
+                break;
+            }
+            // Else if we reach another parenthesis or operator then we are not after a decimal
+            else if (*itr == '(' || *itr == ')' || std::any_of(shuntYard::OPERATORS.cbegin(), shuntYard::OPERATORS.cend(),
+                [itr](const char& op) { return *itr == op; }))
+            {// Set logic appropriately
+                m_afterDec = false;// Set decimal logic to before status
+                m_displayAftrDec = false;
+                ui.decBtn->setEnabled(true);
+                break;
+            }
+        }
+    }
 
     // Remove the last character from the expression
-    current.removeLast();
+    m_internalExpr.pop_back();
 
     // Get the new last character and set next last to null
-    QChar newLast = current.back();
-    QChar nextLast = '\0';
+    char newLast = m_internalExpr.back();
+    char nextLast = '\0';
     // If size > 1 then a next last character exists
-    if (current.size() > 1)
+    if (m_internalExpr.size() > 1)
     {
-        nextLast = current.at(current.size() - 2); // Set it as next last
+        nextLast = m_internalExpr.at(m_internalExpr.size() - 2); // Set it as next last
     }
 
     // If both these characters are '-'
@@ -633,7 +796,8 @@ void CalculatorPlusGeo::delClicked()
     }
 
     // Display the new expression
-    ui.exprBrowser->setText(current);
+    formatDisplayExpr();
+    ui.exprBrowser->setText(m_displayExpr);
 }
 
 void CalculatorPlusGeo::clearClicked()
@@ -641,6 +805,9 @@ void CalculatorPlusGeo::clearClicked()
     m_pDepth = 0;
     m_minusCnt = 1;
     m_afterDec = false;
+    m_displayAftrDec = false;
+    m_displayExpr.clear();
+    m_internalExpr.clear();
     btnsReset();
     ui.exprBrowser->clear();
     ui.ansrBrowser->clear();
