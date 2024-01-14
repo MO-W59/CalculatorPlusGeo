@@ -46,7 +46,7 @@ namespace shuntYard
         long double numValue = 0;
 
     public:
-        explicit Token(std::string);
+        explicit Token(const std::string&);
 
         void setTokenType()
         {
@@ -89,22 +89,21 @@ namespace shuntYard
             }
         }
 
-        void setNumValue(long double& inValue) { numValue = inValue; }
+        void setNumValue(const long double& inValue) { numValue = inValue; }
 
-        void setValue(std::string& inValue) { value = inValue; }
+        void setValue(const std::string_view& inValue) { value = inValue; }
 
-        const int& getPrecedence() { return precedence; }
+        const int& getPrecedence() const { return precedence; }
 
         std::string& getValue() { return value; }
 
-        const char& getType() { return tokenType; }
+        const char& getType() const { return tokenType; }
 
-        const long double& getNValue() { return numValue; }
+        const long double& getNValue() const { return numValue; }
     };
 
-    Token::Token(std::string v)
+    Token::Token(const std::string& value) : value(value)
     {
-        value = v;
         setTokenType();
     }
 
@@ -112,8 +111,8 @@ namespace shuntYard
     {
     private:
         std::string inExpr;
-        int numOfNums;
-        int numOfOps;
+        int numOfNums = 0;
+        int numOfOps = 0;
         std::vector<std::shared_ptr<Token>> tokenList;
         std::vector<std::shared_ptr<Token>> opStack;
         std::vector<std::shared_ptr<Token>> outQueue;
@@ -125,7 +124,7 @@ namespace shuntYard
                 // Check if token is ( or )
                 if (inExpr.at(i) == '(' || inExpr.at(i) == ')')
                 {
-                    std::shared_ptr<Token> token(new Token(inExpr.substr(i, 1)));
+                    auto token = std::make_shared<Token>(inExpr.substr(i, 1));
                     tokenList.push_back(token);
                 }
                 // Check if token is a negative operand
@@ -137,7 +136,7 @@ namespace shuntYard
                     {
                         if (j == inExpr.size() - 1)
                         {
-                            std::shared_ptr<Token> token(new Token(inExpr.substr(i, inExpr.size() - i)));
+                            auto token = std::make_shared<Token>(inExpr.substr(i, inExpr.size() - i));
                             tokenList.push_back(token);
                             i = j;
                             break;
@@ -145,7 +144,7 @@ namespace shuntYard
                         else if (std::find(OPERATORS.begin(), OPERATORS.end(), inExpr.at(j + 1)) != std::end(OPERATORS) || 
                             inExpr.at(j + 1) == '(' || inExpr.at(j + 1) == ')')
                         {
-                            std::shared_ptr<Token> token(new Token(inExpr.substr(i, j - i + 1)));
+                            auto token = std::make_shared<Token>(inExpr.substr(i, j - i + 1));
                             tokenList.push_back(token);
                             i = j;
                             break;
@@ -155,7 +154,7 @@ namespace shuntYard
                 // Check if token is a operator
                 else if (std::find(OPERATORS.begin(), OPERATORS.end(), inExpr.at(i)) != std::end(OPERATORS))
                 {
-                    std::shared_ptr<Token> token(new Token(inExpr.substr(i, 1)));
+                    auto token = std::make_shared<Token>(inExpr.substr(i, 1));
                     tokenList.push_back(token);
                 }
                 // Otherwise token is an operand
@@ -166,7 +165,7 @@ namespace shuntYard
                         if (std::find(OPERATORS.begin(), OPERATORS.end(), inExpr.at(j)) != std::end(OPERATORS) ||
                             inExpr.at(j) == '(' || inExpr.at(j) == ')')
                         {
-                            std::shared_ptr<Token> token(new Token(inExpr.substr(i, j - i)));
+                            auto token = std::make_shared<Token>(inExpr.substr(i, j - i));
                             tokenList.push_back(token);
                             i = j - 1;
                             break;
@@ -174,7 +173,7 @@ namespace shuntYard
                         // Handles operand at end of string
                         else if (j == inExpr.size() - 1 && inExpr.at(j - 1) != ')')
                         {
-                            std::shared_ptr<Token> token(new Token(inExpr.substr(i, inExpr.size() - i)));
+                            auto token = std::make_shared<Token>(inExpr.substr(i, inExpr.size() - i));
                             tokenList.push_back(token);
                             i = j;
                             break;
@@ -184,10 +183,10 @@ namespace shuntYard
             }
         }
 
-        void toNumbers()
+        void toNumbers() const
         {
             // For every 'n' type token place a numValue on token
-            for (std::shared_ptr<Token>& token : tokenList)
+            for (const std::shared_ptr<Token>& token : tokenList)
             {
                 if (token->getType() == 'n')
                 {
@@ -203,7 +202,7 @@ namespace shuntYard
         void shunt()
         {
             // While there are tokens to be read
-            for (std::shared_ptr<Token>& token : tokenList)
+            for (const std::shared_ptr<Token>& token : tokenList)
             {
                 // Read a token
                 // If it's a number add it to queue
@@ -252,7 +251,7 @@ namespace shuntYard
                 }
             }
             // While there are operators on the stack, pop them to the queue
-            for (std::vector<std::shared_ptr<Token>>::reverse_iterator ri = opStack.rbegin(); ri < opStack.rend(); ri++)
+            for (auto ri = opStack.rbegin(); ri < opStack.rend(); ri++)
             {
                 outQueue.push_back(*ri);
             }
@@ -265,36 +264,30 @@ namespace shuntYard
         
 
     public:
-        Yard(std::string);
+        explicit Yard(const std::string_view&);
         ~Yard();
 
-        bool validateShunt()
+        bool validateShunt() const
         {
             // There must be more numbers than operators in a shunt
             if (numOfOps != numOfNums - 1) {
                 return false;
             }
-
-            // If a parenthesis is still present after shunting it is not a valid sunt
-            for (int i = 0; i < outQueue.size(); i++)
+            // If a parenthesis is still present after shunting it is not a valid shunt
+            if (std::any_of(outQueue.cbegin(), outQueue.cend(), 
+                [](std::shared_ptr<Token> token) { return token->getType() == 'p'; }))
             {
-                if (outQueue.at(i)->getType() == 'p') {
-                    return false;
-                }
+                return false;
             }
-
+            // Otherwise its a valid shunt
             return true;
-
         }
 
         std::vector<std::shared_ptr<Token>>& getOutQueue() { return outQueue; }
     };
 
-    Yard::Yard(std::string expr)
+    Yard::Yard(const std::string_view &expr) : inExpr(expr)
     {
-        inExpr = expr;
-        numOfNums = 0;
-        numOfOps = 0;
         // Reserve space -> attempt to avoid bad alloc
         tokenList.reserve(inExpr.size());
         opStack.reserve(inExpr.size());
@@ -304,9 +297,7 @@ namespace shuntYard
         shunt();
     }
 
-    Yard::~Yard()
-    {
-    }
+    Yard::~Yard() = default;
 
     /* Evaluates Yard objects output queue which is a product of the
     shunting yard algorithm, evaluates via Reverse Polish Notation */
@@ -317,7 +308,7 @@ namespace shuntYard
         while (outQueue.size() > 1)
         {
 
-            std::vector<std::shared_ptr<Token>>::iterator qIter = outQueue.begin();
+            auto qIter = outQueue.begin();
             // Look for first operator in queue
             for (int i = 0; i < outQueue.size(); i++)
             {
@@ -325,8 +316,8 @@ namespace shuntYard
                 {
                     // Complete that operation on the two prior operands
                     std::string opValue = outQueue.at(i)->getValue();
-                    std::shared_ptr<Token>& aToken = outQueue.at(i - 2);
-                    std::shared_ptr<Token>& bToken = outQueue.at(i - 1);
+                    const std::shared_ptr<Token>& aToken = outQueue.at(i - 2);
+                    const std::shared_ptr<Token>& bToken = outQueue.at(i - 1);
                     long double nResult = 0;
                     std::string sResult = "";
                     if (opValue == "^")

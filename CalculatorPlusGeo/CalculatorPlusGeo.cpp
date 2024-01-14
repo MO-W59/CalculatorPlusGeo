@@ -399,7 +399,7 @@ void CalculatorPlusGeo::btnsReset()
     enableOpsBtns(false);
 }
 
-void CalculatorPlusGeo::enableNumBtns(bool b) 
+void CalculatorPlusGeo::enableNumBtns(bool b) const
 {// Function to loop through all number buttons and disable or enable them
     for (QPushButton *btn : NUM_BTNS) 
     {
@@ -407,7 +407,7 @@ void CalculatorPlusGeo::enableNumBtns(bool b)
     }
 }
 
-void CalculatorPlusGeo::enableOpsBtns(bool b)
+void CalculatorPlusGeo::enableOpsBtns(bool b) const
 {// Function to loop through all operator buttons excluding '-' and disable or enable them
 
     for (QPushButton *btn : OP_BTNS)

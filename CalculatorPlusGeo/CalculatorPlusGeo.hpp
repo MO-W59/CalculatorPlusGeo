@@ -61,8 +61,8 @@ private:
     void tryGeo();
     void lockBtns();
     void btnsReset();
-    void enableNumBtns(bool);
-    void enableOpsBtns(bool);
+    void enableNumBtns(bool) const;
+    void enableOpsBtns(bool) const;
     void formatAnsr(std::string&) const;
     void formatDisplayExpr();
     void clearGeoLines();

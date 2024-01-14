@@ -28,7 +28,5 @@ C:\Qt\6.6.1\msvc2019_64\plugins
 
 # TODO list
 
-1. Linting.
 1. Double check comments.
-1. Formula display for geometry.
 1. Switch to token based formatting? <-- probably less complex
