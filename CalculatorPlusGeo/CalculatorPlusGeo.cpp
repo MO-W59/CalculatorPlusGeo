@@ -84,8 +84,6 @@ void CalculatorPlusGeo::switchModes()
 
 void CalculatorPlusGeo::tryCal()
 {// Attempts to calculate the expression as user clicks buttons
-    try
-    {
         // Lock buttons accordingly
         lockBtns();
 
@@ -104,10 +102,10 @@ void CalculatorPlusGeo::tryCal()
 
         // Otherwise attempt to make a shuntyard with the expression and validate it
         auto yard = std::make_unique<shuntYard::Yard>(m_internalExpr);
+        // Produce invalid message to user if not valid shuntyard
         if (!yard->validateShunt())
-        {// Throw exception to produce invalid message to user
-            throw std::exception();
-        }
+            return ui.ansrBrowser->setText("Waiting for a valid expression. . .");
+        
         // Otherwise its a valid expression, solve it via RPN
         std::string ansr = shuntYard::RPNEval(yard->getOutQueue());
         // Format to add commas
@@ -115,15 +113,10 @@ void CalculatorPlusGeo::tryCal()
         // Convert to QString and display
         QString qansr = QString::fromStdString(ansr);
         ui.ansrBrowser->setText(qansr);
-    }
-    catch (const std::exception &except)
-    {
-        ui.ansrBrowser->setText("Waiting for a valid expression. . .");
-    }
 }
 
-void CalculatorPlusGeo::formatAnsr(std::string& ansr)
-{// Formats an answer to add commas to a number --> 1000 --> 1,000
+void CalculatorPlusGeo::formatAnsr(std::string &ansr) const
+{// Formats an answer to add commas to a number -> 1000 -> 1,000
     // Look for a decimal
     auto decIndex = ansr.find('.');
     int negativeOffset = 3; // 3 for no negative numbers
@@ -186,18 +179,14 @@ void CalculatorPlusGeo::formatDisplayExpr()
         // Grab an element
         QChar ele = m_displayExpr.at(idx);
         // If not after a decimal and the current element is an operator, right parenthesis, decimal or end of string
-        if (!m_displayAftrDec && (ele == ')' ||  ele == '.' || idx == m_displayExpr.length() - 1 ||
-            std::any_of(shuntYard::OPERATORS.cbegin(), shuntYard::OPERATORS.cend(), 
-            [&ele](const char &op) { return ele == op; })))
+        if (!m_displayAftrDec && (ele == ')' ||  ele == '.' || idx == m_displayExpr.length() - 1 || isOp(ele.toLatin1())))
         {
             // Reverse direction adding commas until another operator or right parenthesis
             // If index is an operator and the prior index is a right parenthesis skip over the parenthesis
             if (idx - 2 > 0 && m_displayExpr.at(idx - 1) == ')')
                 revIdx = idx - 2;
             // Set revIdx based on element at current index or if index is end of string 
-            else if (idx == m_displayExpr.length() - 1 && !(ele == ')' || ele == '.' || 
-                std::any_of(shuntYard::OPERATORS.cbegin(), shuntYard::OPERATORS.cend(),
-                [&ele](const char& op) { return ele == op; })))
+            else if (idx == m_displayExpr.length() - 1 && !(ele == ')' || ele == '.' || isOp(ele.toLatin1())))
                 revIdx = idx; // begins from end of string
             else
                 revIdx = idx - 1; // Skips back 1 to go to number before operator/dec/parenthesis
@@ -208,16 +197,12 @@ void CalculatorPlusGeo::formatDisplayExpr()
             {
                 digitCnt++;
                 // If current value is left parenthesis or an operator break out of inner loop
-                if (QChar revEle = m_displayExpr.at(revIdx); revEle == '(' ||
-                    std::any_of(shuntYard::OPERATORS.cbegin(), shuntYard::OPERATORS.cend(),
-                    [&revEle](const char& op) { return revEle == op; })) 
+                if (QChar revEle = m_displayExpr.at(revIdx); revEle == '(' || isOp(revEle.toLatin1())) 
                 {
                     break;
                 }
                 // Else if a comma should be placed and next value is a number
-                else if (QChar nextEle = m_displayExpr.at(revIdx - 1); digitCnt == 3 && 
-                    std::any_of(shuntYard::NUMBERS.cbegin(), shuntYard::NUMBERS.cend(),
-                    [&nextEle] (const char &num) { return nextEle == num;}))
+                else if (QChar nextEle = m_displayExpr.at(revIdx - 1); digitCnt == 3 && isNum(nextEle.toLatin1()))
                 {
                     m_displayExpr.insert(revIdx, ",");
                     idx++; // Increment index to account for new character
@@ -235,9 +220,7 @@ void CalculatorPlusGeo::formatDisplayExpr()
         if (ele == '.')
             m_displayAftrDec = true;
         // Else if its an operator or left parenthesis then we are no longer after a decimal
-        else if (ele == '(' ||
-            std::any_of(shuntYard::OPERATORS.cbegin(), shuntYard::OPERATORS.cend(),
-            [&ele](const char& op) { return ele == op; }))
+        else if (ele == '(' || isOp(ele.toLatin1()))
             m_displayAftrDec = false;
         idx++;
     }
@@ -258,8 +241,7 @@ void CalculatorPlusGeo::lockBtns()
     // Otherwise get the last character in the expression
     char lastEntry = m_internalExpr.back();
     // If its a number set lastEntry to 'n'
-    if (std::any_of(shuntYard::NUMBERS.cbegin(), shuntYard::NUMBERS.cend(), 
-        [lastEntry](char const &num) { return num == lastEntry; }))
+    if (isNum(lastEntry))
     {
         lastEntry = 'n';
     }
@@ -271,8 +253,7 @@ void CalculatorPlusGeo::lockBtns()
         the 'o' assignment below. This check is required because
         the '-' character is included in shuntYard::OPERATORS.*/
     }
-    else if (std::any_of(shuntYard::OPERATORS.cbegin(), shuntYard::OPERATORS.cend(),
-        [lastEntry](char const &op) { return op == lastEntry; })) 
+    else if (isOp(lastEntry)) 
     // If its an operator other than '-' set last as 'o'
     {
         lastEntry = 'o';
@@ -448,7 +429,7 @@ void CalculatorPlusGeo::tryGeo()
     {
         for (int col = 0; col < ui.geoGrid->columnCount(); col++)
         {
-            QRadioButton* radBtn = static_cast<QRadioButton*>(ui.geoGrid->itemAtPosition(row, col)->widget());
+            const QRadioButton* radBtn = static_cast<QRadioButton*>(ui.geoGrid->itemAtPosition(row, col)->widget());
             if (radBtn != nullptr && radBtn->isChecked())
             {
                 QString qtargetShape = radBtn->objectName();
@@ -747,8 +728,7 @@ void CalculatorPlusGeo::delClicked()
     }
 
     // If the last value is an operator or last is minus and minus count = 1
-    if (std::any_of(shuntYard::OPERATORS.cbegin(), shuntYard::OPERATORS.cend(),
-        [&last](const char& op) { return last == op; }) || (last == '-' && m_minusCnt == 1))
+    if (isOp(last) || (last == '-' && m_minusCnt == 1))
     {   // Look for the next occurrence of a '.' or an operator
         for (auto itr = m_internalExpr.end() - 2; itr > m_internalExpr.begin(); itr--)
         {
@@ -761,8 +741,7 @@ void CalculatorPlusGeo::delClicked()
                 break;
             }
             // Else if we reach another parenthesis or operator then we are not after a decimal
-            else if (*itr == '(' || *itr == ')' || std::any_of(shuntYard::OPERATORS.cbegin(), shuntYard::OPERATORS.cend(),
-                [itr](const char& op) { return *itr == op; }))
+            else if (*itr == '(' || *itr == ')' || isOp(*itr))
             {// Set logic appropriately
                 m_afterDec = false;// Set decimal logic to before status
                 m_displayAftrDec = false;
@@ -827,6 +806,7 @@ void CalculatorPlusGeo::clearGeoLines()
 void CalculatorPlusGeo::squareClicked()
 {
     clearGeoLines();
+    ui.formulaContentLabel->setText("area = a^2");
     ui.geoVal1Line->setPlaceholderText("side = ");
     ui.geoVal2Line->setPlaceholderText("N/A");
     ui.geoVal3Line->setPlaceholderText("N/A");
@@ -835,6 +815,7 @@ void CalculatorPlusGeo::squareClicked()
 void CalculatorPlusGeo::rectClicked()
 {
     clearGeoLines();
+    ui.formulaContentLabel->setText("area = a * b");
     ui.geoVal1Line->setPlaceholderText("height = ");
     ui.geoVal2Line->setPlaceholderText("width = ");
     ui.geoVal3Line->setPlaceholderText("N/A");
@@ -843,6 +824,7 @@ void CalculatorPlusGeo::rectClicked()
 void CalculatorPlusGeo::circleClicked()
 {
     clearGeoLines();
+    ui.formulaContentLabel->setText("area = PI * r^2");
     ui.geoVal1Line->setPlaceholderText("radius = ");
     ui.geoVal2Line->setPlaceholderText("N/A");
     ui.geoVal3Line->setPlaceholderText("N/A");
@@ -851,6 +833,7 @@ void CalculatorPlusGeo::circleClicked()
 void CalculatorPlusGeo::triangleClicked()
 {
     clearGeoLines();
+    ui.formulaContentLabel->setText("area = 0.25 * sqrt((a + b + c) * \n(-a + b + c) * \n(a - b + c) * \n(a + b - c))");
     ui.geoVal1Line->setPlaceholderText("a = ");
     ui.geoVal2Line->setPlaceholderText("b = ");
     ui.geoVal3Line->setPlaceholderText("c = ");
@@ -859,6 +842,7 @@ void CalculatorPlusGeo::triangleClicked()
 void CalculatorPlusGeo::cubeClicked()
 {
     clearGeoLines();
+    ui.formulaContentLabel->setText("volume = a^3");
     ui.geoVal1Line->setPlaceholderText("edge = ");
     ui.geoVal2Line->setPlaceholderText("N/A");
     ui.geoVal3Line->setPlaceholderText("N/A");
@@ -867,6 +851,7 @@ void CalculatorPlusGeo::cubeClicked()
 void CalculatorPlusGeo::cuboidClicked()
 {
     clearGeoLines();
+    ui.formulaContentLabel->setText("volume = a * b * c");
     ui.geoVal1Line->setPlaceholderText("height = ");
     ui.geoVal2Line->setPlaceholderText("width = ");
     ui.geoVal3Line->setPlaceholderText("depth = ");
@@ -875,6 +860,7 @@ void CalculatorPlusGeo::cuboidClicked()
 void CalculatorPlusGeo::sphereClicked()
 {
     clearGeoLines();
+    ui.formulaContentLabel->setText("volume = (4.0 / 3.0) * PI * r^3");
     ui.geoVal1Line->setPlaceholderText("radius = ");
     ui.geoVal2Line->setPlaceholderText("N/A");
     ui.geoVal3Line->setPlaceholderText("N/A");
@@ -883,6 +869,7 @@ void CalculatorPlusGeo::sphereClicked()
 void CalculatorPlusGeo::triPyClicked()
 {
     clearGeoLines();
+    ui.formulaContentLabel->setText("volume = sqrt(3) / 12 * \nbase^2 * height");
     ui.geoVal1Line->setPlaceholderText("height = ");
     ui.geoVal2Line->setPlaceholderText("base = ");
     ui.geoVal3Line->setPlaceholderText("N/A");
@@ -891,7 +878,20 @@ void CalculatorPlusGeo::triPyClicked()
 void CalculatorPlusGeo::sqrPyClicked()
 {
     clearGeoLines();
+    ui.formulaContentLabel->setText("volume = 1.0 / 3.0 * base^2 * height");
     ui.geoVal1Line->setPlaceholderText("height = ");
     ui.geoVal2Line->setPlaceholderText("base = ");
     ui.geoVal3Line->setPlaceholderText("N/A");
+}
+
+bool CalculatorPlusGeo::isNum(const char &input) const
+{
+    return std::any_of(shuntYard::NUMBERS.cbegin(), shuntYard::NUMBERS.cend(),
+        [&input](const char& num) { return num == input; });
+}
+
+bool CalculatorPlusGeo::isOp(const char &input) const
+{
+    return  std::any_of(shuntYard::OPERATORS.cbegin(), shuntYard::OPERATORS.cend(),
+        [&input](const char& op) { return op == input; });
 }

@@ -63,7 +63,9 @@ private:
     void btnsReset();
     void enableNumBtns(bool);
     void enableOpsBtns(bool);
-    void formatAnsr(std::string&);
+    void formatAnsr(std::string&) const;
     void formatDisplayExpr();
     void clearGeoLines();
+    bool isNum(const char&) const;
+    bool isOp(const char&) const;
 };

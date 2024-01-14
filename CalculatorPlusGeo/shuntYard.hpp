@@ -46,21 +46,19 @@ namespace shuntYard
         long double numValue = 0;
 
     public:
-        Token(std::string);
+        explicit Token(std::string);
 
         void setTokenType()
         {
-            for (int i = 0; i < OPERATORS.size(); i++)
+            for (char op : OPERATORS)
             {
-                for (int j = 0; j < value.size(); j++)
-                {
-                    if (value.at(j) == OPERATORS[i] && value.size() == 1)
+                    if (value.front() == op && value.size() == 1)// check for size 1 due to negative numbers
                     {
                         tokenType = 'o'; // o for operator
                         setPrecedence();
                         return;
                     }
-                    else if (value.at(j) == '(' || value.at(j) == ')')
+                    else if (value == "(" || value == ")")
                     {
                         tokenType = 'p'; // p for parenthesis
                         precedence = 0;
@@ -72,7 +70,6 @@ namespace shuntYard
                         precedence = 0;
                         tokenType = 'n'; // n for number
                     }
-                }
             }
         }
 
@@ -194,7 +191,10 @@ namespace shuntYard
             {
                 if (token->getType() == 'n')
                 {
-                    long double inValue = std::stold(token->getValue());
+                    std::string tVal = token->getValue();
+                    if (tVal == "." || tVal == "-.") // In the event of a lone decimal add a 0 to it
+                        tVal += "0";
+                    long double inValue = std::stold(tVal);
                     token->setNumValue(inValue);
                 }
             }
@@ -270,10 +270,12 @@ namespace shuntYard
 
         bool validateShunt()
         {
+            // There must be more numbers than operators in a shunt
             if (numOfOps != numOfNums - 1) {
                 return false;
             }
 
+            // If a parenthesis is still present after shunting it is not a valid sunt
             for (int i = 0; i < outQueue.size(); i++)
             {
                 if (outQueue.at(i)->getType() == 'p') {
