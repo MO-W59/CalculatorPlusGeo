@@ -1,5 +1,7 @@
 # CalculatorPlusGeo
 
+![calculator pic](Example Picture.png)
+
 GUI app that performs like a desktop Calculator but also performs Geometry based calculations for a set list of shapes (Square, Rectangle, Circle, Triangle, Cube, Cuboid, Sphere, Right 3 Sided Pyramid, Right 4 Sided Pyramid).
 
 NOTE:
