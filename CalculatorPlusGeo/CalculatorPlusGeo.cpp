@@ -254,8 +254,7 @@ void CalculatorPlusGeo::lockBtns()
         the '-' character is included in shuntYard::OPERATORS.*/
     }
     else if (isOp(lastEntry)) 
-    // If its an operator other than '-' set last as 'o'
-    {
+    {// If its an operator other than '-' set last as 'o'
         lastEntry = 'o';
     }
     // Other cases handle themselves as their char values will be used in the switch as is
@@ -265,13 +264,13 @@ void CalculatorPlusGeo::lockBtns()
     {
     case 'n':
         m_minusCnt = 0;
-        // Enable these btns
+        // Enable these buttons
         enableOpsBtns(true);
         ui.zeroBtn->setEnabled(true);
         ui.minusBtn->setEnabled(true);
         if (m_pDepth > 0)
             ui.rightParenBtn->setEnabled(true);
-        // Disable these btns
+        // Disable these buttons
         else
             ui.rightParenBtn->setDisabled(true);
         ui.leftParenBtn->setDisabled(true);
@@ -280,20 +279,20 @@ void CalculatorPlusGeo::lockBtns()
     case 'o':
         m_minusCnt = 1;
         m_afterDec = false;
-        // Enable these btns
+        // Enable these buttons
         ui.leftParenBtn->setEnabled(true);
         ui.minusBtn->setEnabled(true);
         ui.decBtn->setEnabled(true);
         ui.zeroBtn->setEnabled(true);
         enableNumBtns(true);
-        // Disable these btns
+        // Disable these buttons
         enableOpsBtns(false);
         ui.rightParenBtn->setDisabled(true);
         break;
 
     case '-':
         m_afterDec = false;
-        // Enable these btns
+        // Enable these buttons
         enableNumBtns(true);
         ui.decBtn->setEnabled(true);
         ui.zeroBtn->setEnabled(true);
@@ -301,7 +300,7 @@ void CalculatorPlusGeo::lockBtns()
         {
             ui.leftParenBtn->setEnabled(true);
         }
-        // Disable these btns
+        // Disable these buttons
         else
         {
             ui.leftParenBtn->setDisabled(true);
@@ -317,10 +316,10 @@ void CalculatorPlusGeo::lockBtns()
     case '.':
         m_minusCnt = 0;
         m_afterDec = true;
-        // Enable these btns
+        // Enable these buttons
         enableNumBtns(true);
         ui.zeroBtn->setEnabled(true);
-        // Disable these btns
+        // Disable these buttons
         enableOpsBtns(false);
         ui.minusBtn->setDisabled(true);
         ui.leftParenBtn->setDisabled(true);
@@ -330,13 +329,13 @@ void CalculatorPlusGeo::lockBtns()
 
     case '(':
         m_minusCnt = 1;
-        // Enable these btns
+        // Enable these buttons
         enableNumBtns(true);
         ui.minusBtn->setEnabled(true);
         ui.decBtn->setEnabled(true);
         ui.zeroBtn->setEnabled(true);
         ui.leftParenBtn->setEnabled(true);
-        // Disable these btns
+        // Disable these buttons
         enableOpsBtns(false);
         ui.rightParenBtn->setDisabled(true);
         break;
@@ -344,12 +343,12 @@ void CalculatorPlusGeo::lockBtns()
     case ')':
         m_minusCnt = 0;
         m_afterDec = false;
-        // Enable these btns
+        // Enable these buttons
         enableOpsBtns(true);
         ui.minusBtn->setEnabled(true);
         if (m_pDepth > 0)
             ui.rightParenBtn->setEnabled(true);
-        // Disable these btns
+        // Disable these buttons
         else
             ui.rightParenBtn->setDisabled(true);
         enableNumBtns(false);
@@ -360,7 +359,7 @@ void CalculatorPlusGeo::lockBtns()
 
     case '0':
         m_minusCnt = 0;
-        // Enable these btns
+        // Enable these buttons
         enableOpsBtns(true);
         ui.rightParenBtn->setEnabled(true);
         ui.minusBtn->setEnabled(true);
@@ -370,7 +369,7 @@ void CalculatorPlusGeo::lockBtns()
             enableNumBtns(true);
             ui.zeroBtn->setEnabled(true);
         }
-        // Disable these btns
+        // Disable these buttons
         else
         {
             enableNumBtns(false);
@@ -523,7 +522,7 @@ void CalculatorPlusGeo::tryGeo()
     }
 
     if (!isConverted)
-    {
+    {// If a conversion cannot be made inputs were not valid
         ui.geoAnsrBrowser->setText("Awaiting valid input . . .");
         return;
     }
@@ -743,7 +742,7 @@ void CalculatorPlusGeo::delClicked()
             // Else if we reach another parenthesis or operator then we are not after a decimal
             else if (*itr == '(' || *itr == ')' || isOp(*itr))
             {// Set logic appropriately
-                m_afterDec = false;// Set decimal logic to before status
+                m_afterDec = false;
                 m_displayAftrDec = false;
                 ui.decBtn->setEnabled(true);
                 break;
@@ -768,7 +767,7 @@ void CalculatorPlusGeo::delClicked()
     {
         m_minusCnt = 2; // Set minus count to 2
     }
-    // If only the newLast
+    // If only newLast == '-'
     else if (newLast == '-')
     {
         m_minusCnt = 1; // Set minus count to 1
@@ -885,13 +884,13 @@ void CalculatorPlusGeo::sqrPyClicked()
 }
 
 bool CalculatorPlusGeo::isNum(const char &input) const
-{
+{// Function to check if any given input character is in the shuntyard numbers array
     return std::any_of(shuntYard::NUMBERS.cbegin(), shuntYard::NUMBERS.cend(),
         [&input](const char& num) { return num == input; });
 }
 
 bool CalculatorPlusGeo::isOp(const char &input) const
-{
+{// Function to check if any given input character is in the shuntyard operators array
     return  std::any_of(shuntYard::OPERATORS.cbegin(), shuntYard::OPERATORS.cend(),
         [&input](const char& op) { return op == input; });
 }

@@ -26,7 +26,8 @@ for example add this folder to folder holding the .exe:
 C:\Qt\6.6.1\msvc2019_64\plugins
 
 
-# TODO list
+# Long Term TODO
 
-1. Double check comments.
+1. Could change RPNEval function to use two iterators and maybe not restart from beginning of the shuntyard queue?
 1. Switch to token based formatting? <-- probably less complex
+1. Large number implementation?

@@ -8,10 +8,12 @@ by the ui file */
 class CalculatorPlusGeo : public QMainWindow
 {
     Q_OBJECT
+    // These represent the calculator's starting logic state
     int m_pDepth = 0;
     short m_minusCnt = 1;
     bool m_afterDec = false;
     bool m_displayAftrDec = false;
+    // ----------------------------------------
     QString m_displayExpr = "";
     std::string m_internalExpr = "";
     std::array<QPushButton*, 4> OP_BTNS;
@@ -22,6 +24,7 @@ public:
     CalculatorPlusGeo(QWidget *parent = nullptr);
     ~CalculatorPlusGeo();
 
+// Button handlers
 private slots:
     void switchModes();
     void zeroClicked();
@@ -54,6 +57,7 @@ private slots:
     void triPyClicked();
     void sqrPyClicked();
 
+// Functions to run the ui logic, handle expression events, and formatting
 private:
     Ui::CalculatorPlusGeoClass ui;
     void setHandlers() const;

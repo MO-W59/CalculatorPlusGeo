@@ -1,7 +1,9 @@
 /* Main algorithms used to change an infix expression to
 a postfix expression. Uses the shuntyard algorithm to create
 an output queue in reverse polish notation which can then
-be solved by the accompanying RPN eval function */
+be solved by the accompanying RPN eval function 
+------------------------------------------------------------
+No .cpp file created to provide some future portability */
 
 #pragma once
 
@@ -38,7 +40,7 @@ namespace shuntYard
     };
 
     class Token
-    {
+    {// Represents part of the expression ie -> number, parenthesis, operator
     private:
         std::string value;
         char tokenType;
@@ -49,32 +51,32 @@ namespace shuntYard
         explicit Token(const std::string&);
 
         void setTokenType()
-        {
+        {// Sets what kind of token it is based on length and contents
             for (char op : OPERATORS)
             {
-                    if (value.front() == op && value.size() == 1)// check for size 1 due to negative numbers
-                    {
-                        tokenType = 'o'; // o for operator
-                        setPrecedence();
-                        return;
-                    }
-                    else if (value == "(" || value == ")")
-                    {
-                        tokenType = 'p'; // p for parenthesis
-                        precedence = 0;
-                        return;
-                    }
+                if (value.front() == op && value.size() == 1)// check for size 1 due to negative numbers
+                {
+                    tokenType = 'o'; // o for operator
+                    setPrecedence();
+                    return;
+                }
+                else if (value == "(" || value == ")")
+                {
+                    tokenType = 'p'; // p for parenthesis
+                    precedence = 0;
+                    return;
+                }
 
-                    else
-                    {
-                        precedence = 0;
-                        tokenType = 'n'; // n for number
-                    }
+                else
+                {
+                    precedence = 0;
+                    tokenType = 'n'; // n for number
+                }
             }
         }
 
         void setPrecedence()
-        {
+        {// Sets token precedence -> used to order a shuntyard -> higher number = higher precedence
             if (value == "^")
             {
                 precedence = 3;
@@ -90,15 +92,10 @@ namespace shuntYard
         }
 
         void setNumValue(const long double& inValue) { numValue = inValue; }
-
         void setValue(const std::string_view& inValue) { value = inValue; }
-
         const int& getPrecedence() const { return precedence; }
-
         std::string& getValue() { return value; }
-
         const char& getType() const { return tokenType; }
-
         const long double& getNValue() const { return numValue; }
     };
 
@@ -108,14 +105,14 @@ namespace shuntYard
     }
 
     class Yard
-    {
+    { // Represents a list of tokens to be used for calculations
     private:
         std::string inExpr;
         int numOfNums = 0;
         int numOfOps = 0;
         std::vector<std::shared_ptr<Token>> tokenList;
         std::vector<std::shared_ptr<Token>> opStack;
-        std::vector<std::shared_ptr<Token>> outQueue;
+        std::vector<std::shared_ptr<Token>> outQueue; // Final queue to be sent to RPN evaluation
 
         void tokenize() // Converts the input expression string to a vector of tokens
         {
@@ -127,29 +124,28 @@ namespace shuntYard
                     auto token = std::make_shared<Token>(inExpr.substr(i, 1));
                     tokenList.push_back(token);
                 }
-                // Check if token is a negative operand
-                else if ((inExpr.at(i) == '-' && i == 0) ||
-                    (inExpr.at(i) == '-' &&
+                // Check if token is a negative operand, looks for a operator at i-1 also to confirm
+                else if ((inExpr.at(i) == '-' && i == 0) || (inExpr.at(i) == '-' &&
                         std::find(OPERATORS.begin(), OPERATORS.end(), inExpr.at(i - 1)) != std::end(OPERATORS)))
                 {
-                    for (int j = i; j < inExpr.size(); j++)
-                    {
+                     for (int j = i; j < inExpr.size(); j++)
+                     {// Look right until end of the expression
                         if (j == inExpr.size() - 1)
-                        {
+                        {// If at the end make that range a token
                             auto token = std::make_shared<Token>(inExpr.substr(i, inExpr.size() - i));
                             tokenList.push_back(token);
                             i = j;
                             break;
-                        }
+                        }// Or we hit a parethesis or operator
                         else if (std::find(OPERATORS.begin(), OPERATORS.end(), inExpr.at(j + 1)) != std::end(OPERATORS) || 
                             inExpr.at(j + 1) == '(' || inExpr.at(j + 1) == ')')
-                        {
+                        {// If at a parenthesis or operator make that range a token
                             auto token = std::make_shared<Token>(inExpr.substr(i, j - i + 1));
                             tokenList.push_back(token);
                             i = j;
                             break;
                         }
-                    }
+                     }
                 }
                 // Check if token is a operator
                 else if (std::find(OPERATORS.begin(), OPERATORS.end(), inExpr.at(i)) != std::end(OPERATORS))
@@ -161,7 +157,7 @@ namespace shuntYard
                 else
                 {
                     for (int j = i; j < inExpr.size(); j++)
-                    {
+                    {// Go right until we hit an operator, parenthesis or end of the string and make that range a token
                         if (std::find(OPERATORS.begin(), OPERATORS.end(), inExpr.at(j)) != std::end(OPERATORS) ||
                             inExpr.at(j) == '(' || inExpr.at(j) == ')')
                         {
@@ -184,8 +180,7 @@ namespace shuntYard
         }
 
         void toNumbers() const
-        {
-            // For every 'n' type token place a numValue on token
+        {// For every 'n' type token place a numValue on token
             for (const std::shared_ptr<Token>& token : tokenList)
             {
                 if (token->getType() == 'n')
@@ -209,12 +204,12 @@ namespace shuntYard
                 if (token->getType() == 'n')
                 {
                     outQueue.push_back(token);
-                    numOfNums += 1; // Used later for validation
+                    numOfNums += 1; // Used later for shunt validation
                 }
                 // If it's an operator
                 else if (token->getType() == 'o')
                 {
-                    numOfOps += 1; // Used later for validation
+                    numOfOps += 1; // Used later for shunt validation
                     // While there's an operator on the top of the stack with greater or equal precedence
                     while (!opStack.empty() && opStack.back()->getPrecedence() >= token->getPrecedence())
                     {
@@ -261,14 +256,14 @@ namespace shuntYard
             
         }
 
-        
-
     public:
         explicit Yard(const std::string_view&);
         ~Yard();
+        std::vector<std::shared_ptr<Token>>& getOutQueue() { return outQueue; }
+
 
         bool validateShunt() const
-        {
+        {// Used to ensure the produced shunt is valid
             // There must be more numbers than operators in a shunt
             if (numOfOps != numOfNums - 1) {
                 return false;
@@ -282,8 +277,6 @@ namespace shuntYard
             // Otherwise its a valid shunt
             return true;
         }
-
-        std::vector<std::shared_ptr<Token>>& getOutQueue() { return outQueue; }
     };
 
     Yard::Yard(const std::string_view &expr) : inExpr(expr)
@@ -292,6 +285,7 @@ namespace shuntYard
         tokenList.reserve(inExpr.size());
         opStack.reserve(inExpr.size());
         outQueue.reserve(inExpr.size());
+        // On constuction change expression to tokens, give number tokens number values and create a shunt
         tokenize();
         toNumbers();
         shunt();
@@ -302,7 +296,7 @@ namespace shuntYard
     /* Evaluates Yard objects output queue which is a product of the
     shunting yard algorithm, evaluates via Reverse Polish Notation */
     std::string RPNEval(std::vector<std::shared_ptr<Token>>& outQueue)
-    {
+    {// Could change loops to use two iterators and start from last token removed?
 
         // While the output queue size is > 1
         while (outQueue.size() > 1)
@@ -352,9 +346,11 @@ namespace shuntYard
                     aToken->setValue(sResult);
                     aToken->setNumValue(nResult);
                     qIter = outQueue.erase(qIter - 1);
+                    // Adjust index and iterator to account for the tokens removed
                     qIter -= 1;
                     i -= 2;
                 }
+                // Follow for loop index with iterator
                 qIter++;
             }
         }
